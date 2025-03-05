@@ -1,2 +1,2 @@
-# diet-tracker
-This system tracks you calories you eat, and gives you the calories you should eat given if you want to cut, bulk or maingain.
+# Dieting device
+This system asks you a series of questions about yourself to estimate how many calories you burn each day. These questions cover aspects like height, weight, gender, and time spent walking. Based on your answers, the device calculates your total maintenance calories (the number of calories needed to maintain your current weight). It then determines how many calories you should consume to reach your goals (whether you're aiming to maintain, cut, or bulk). Afterward, it shows your daily calorie burn and the corresponding calorie deficit or surplus to help you achieve your weight goal. Finally, it provides a visual representation of your projected weight over the desired number of days, including your maintenance calories and the target calories you should eat to reach your goal.
