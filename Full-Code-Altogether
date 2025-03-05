@@ -1,0 +1,268 @@
+import matplotlib.pyplot as plt  # For creating plots and visualizations
+import numpy as np  # For numerical computations and array operations
+
+# Welcome message for the diet calculator
+print ("Hello, and welcome to the ideal diet calculator. Please answer some of the questions that we ask down below: ")
+
+times = 1
+while True: 
+
+    # First-time greeting
+    if times == 1: 
+        pass
+    else:
+        print ("This is your", times, "time here, keep enjoying")
+
+    # Function to safely get numeric input and handle potential errors
+    def getintegerinput (prompt):
+        while True:
+            try: 
+                # Convert input to float to allow decimal inputs
+                value = float(input(prompt))
+                return value
+            except ValueError:
+                # Error handling for invalid numeric inputs
+                print ("Please enter a positive integer")
+
+    # Collect user's physical characteristics
+    # Height in inches
+    height = getintegerinput("How tall are you in inches? ")
+
+    # Current weight in pounds
+    weight = getintegerinput("How much do you weigh in right now, (in pounds) ? ")
+
+    # Determine user's fitness goal
+    cutorbulk = input("Are you trying to maingain, bulk, or cut? ").strip().lower()
+
+    # Handle specific goal-related inputs
+    if cutorbulk == "bulk" or cutorbulk == "cut":
+        if cutorbulk == "cut":
+            # Weight loss goal
+            total = float(input("How many pounds are you trying to lose in total? ").strip().lower())
+            speed = float(input("In how many days are you trying to lose this weight by (only in days please)? "))
+        elif cutorbulk == "bulk":
+            # Weight gain goal
+            total = float(input("How many pounds are you trying to gain in total? ").strip().lower())
+            speed = float(input("In how many days are you trying to gain this weight by (only in days please)? "))            
+    elif cutorbulk == "maingain":
+        # No weight change goal
+        total = 0
+        speed = 0
+    else: 
+        print ("Please enter only maingain, bulk or cut please")
+        while True:
+            newvalue = str()
+
+    # Collect additional personal information    
+    # Age rounded to nearest year
+    age = getintegerinput("Please enter your age and round to the nearest year (use integers please): ")
+
+    # Average sleep hours
+    sleep = getintegerinput("How much on average do you sleep, (in hours)? ")
+
+    # Gender for accurate BMR calculation
+    gender = input("Are you male or female? ").strip().lower()
+
+    # Basal Metabolic Rate (BMR) calculation based on gender
+    if gender == "male":
+        # Mifflin-St Jeor Equation for males
+        bmr =  66.5 + (weight * 13.75 * 0.45359237) + (5.003 * (height * 2.54)) - (6.75 * age)
+        # Calories burned during sleep
+        calorieswhilesleeping = (bmr/24) * sleep * 0.85
+        
+    elif gender == "female":
+        # Mifflin-St Jeor Equation for females
+        bmr = (weight * 0.45359237 * 9.563 ) + 655.1 + (1.850 * (height * 2.54) ) - (4.676  * age)
+        # Calories burned during sleep
+        calorieswhilesleeping = (bmr/24) * sleep * 0.85
+    else: 
+        print ("There is an error in the gender that you gave us, please pick either male or female")
+
+    # Workout information
+    # Average daily workout duration
+    workout = float(input("How long do you workout for each day, on average, (in minutes)? ").strip().lower())
+
+    # Number of workout days per week
+    if workout > 1:
+        daysworkout = int(input("How many days a week do you workout for, (quanitity of days)? ").strip().lower())        
+    elif workout == 0:
+        daysworkout = 0
+    else: 
+        print ("Please enter an integer and try again")
+        break
+
+    # Walking information
+    walk = getintegerinput("How long do you walk on average each day? (in minutes) ")
+
+    # Walking speed if applicable
+    if walk > 0:
+        mph = float(input("How fast do you think you walk? Please enter an integer. (in mph) ex.(slow pace = 1-2 mph), (moderate pace = 2-3 mph), (brisk pace = 3-5 mph): "))
+    elif walk == 0: 
+        walk = 0
+        mph = 0
+
+    # Sitting time
+    sitting = getintegerinput("How long do you sit for each day on average, (in minutes)? ")
+
+    # Calorie burn calculations for different activities
+    # Calories burned from walking (using a comprehensive formula)
+    caloriesburntfromwalking = (0.035 * (weight * 0.45359237)) +(((mph/2.23694) * (mph/2.23694))/(height * 0.0254)) * 0.029 * (weight * 0.45359237)
+
+    # Calories burned from sitting
+    caloriesburntfromsitting = 0.00793786 * weight * sitting
+
+    # Calories burned during workouts
+    caloriesburntwhileworkingout = (5.55555556 * workout * daysworkout)/7
+
+    # Calories burned while standing
+    caloriesburntstanding = (weight * 0.15)
+
+    # Function to calculate total daily calories burned
+    def calculatingcalories(caloriesburntfromwalking, caloriesburntfromsitting,caloriesburntwhileworkingout,calorieswhilesleeping):
+        # Sum of calories burned through different activities
+        calorieseachday = caloriesburntfromwalking + caloriesburntfromsitting + caloriesburntwhileworkingout + calorieswhilesleeping
+        return calorieseachday
+
+    # Calculate total calories burned each day
+    totalcalorieseachday = calculatingcalories(caloriesburntfromwalking, caloriesburntfromsitting,caloriesburntwhileworkingout,calorieswhilesleeping)
+    
+    # Calculate additional calories burned during non-active time
+    amounttimeleftover = 24*7 - sleep * 7 - workout/60 * daysworkout - walk/60 * 7 - sitting/60 * 7
+    finaltime = (amounttimeleftover) * caloriesburntstanding 
+
+    # Update total calories burned
+    totalcalorieseachday = totalcalorieseachday + finaltime
+    print ("On average, this is the total amount of calories that you burn each day:", totalcalorieseachday)
+    
+    # Plotting section for different fitness goals
+    if cutorbulk == "bulk":
+        caloriesaday = (total *3500/speed)
+        newtotal = caloriesaday + totalcalorieseachday
+        print (caloriesaday, "is going to be the surplus you are in each day while", newtotal , " is the minimum amount of calories each day you must eat to gain", total , "to get you up to ",(weight+total), " pounds... you got this!")
+        
+        # Prepare data for plotting
+        days = np.arange(0, speed + 1)
+        calories_per_day = [newtotal] * len(days)
+        maintenance_calories = [totalcalorieseachday] * len(days)
+        weights = [weight + (total * (day / speed)) for day in days]
+        
+        # Create the plot with improved visualization
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+        
+        # Calories plot (top subplot)
+        ax1.set_title('Calories Progression')
+        ax1.plot(days, calories_per_day, color='tab:blue', label='Calories per Day')
+        ax1.plot(days, maintenance_calories, color='tab:green', label='Maintenance Calories', linestyle='--')
+        ax1.set_ylabel('Calories', color='tab:blue')
+        ax1.legend()
+        
+        # Add grid for better readability
+        ax1.grid(True, linestyle='--', alpha=0.7)
+        
+        # Calculate y-axis limits for calories with some padding
+        cal_min = min(min(calories_per_day), min(maintenance_calories)) * 0.9
+        cal_max = max(max(calories_per_day), max(maintenance_calories)) * 1.1
+        ax1.set_ylim(cal_min, cal_max)
+        
+        # Weight plot (bottom subplot)
+        ax2.set_title('Weight Progression')
+        ax2.plot(days, weights, color='tab:red', label='Weight')
+        ax2.set_xlabel('Days')
+        ax2.set_ylabel('Weight (lbs)', color='tab:red')
+        ax2.legend()
+        
+        # Add grid for better readability
+        ax2.grid(True, linestyle='--', alpha=0.7)
+        
+        # Calculate y-axis limits for weight with some padding
+        weight_min = min(weights) * 0.99
+        weight_max = max(weights) * 1.01
+        ax2.set_ylim(weight_min, weight_max)
+        
+        # Add text annotations for key information
+        ax1.annotate(f'Daily Calories: {newtotal:.0f}', #newtotal: The value to be displayed, .0f: Format specifier that rounds to 0 decimal places (whole number), ex: So if newtotal is 1800.6, it will display as "Daily Calories: 1801"
+                     xy=(days[-1], calories_per_day[-1]), #(days[-1], calories_per_day[-1]) specifies the point to annotate; days[-1] is the last day in the x-axis, while calories_per_day[-1] is the corresponding calories value for that day
+                     xytext=(10, 10),  #(10, 10) means offset the text 10 points right and 10 points up from the xy point
+                     textcoords='offset points') #Tells matplotlib to interpret xytext as a point-based offset, ensuring the text is placed 10 points right and 10 points up from the reference point
+        
+        ax2.annotate(f'Final Weight: {weights[-1]:.1f} lbs', #same logic as above, just with different data and formatting
+                     xy=(days[-1], weights[-1]), 
+                     xytext=(10, 10), 
+                     textcoords='offset points')
+        
+        plt.tight_layout()
+        plt.show()
+        
+    elif cutorbulk == "cut":
+        caloriesaday = ((total *3500/speed) * -1) #Multiplying by -1 makes the number negative to represent a deficit; calculates the total amount to lose weight
+        newtotal = caloriesaday + totalcalorieseachday
+        print (caloriesaday, "is going to be the deficit you are in each day while", newtotal ," is the maximum amount of calories each day you can eat to lose", total ,"to get you down to ", (weight-total), "pounds... you got this!")
+        
+        # Prepare data for plotting
+        days = np.arange(0, speed + 1)# Create an array of days from 0 to speed
+        calories_per_day = [newtotal] * len(days)# Constant daily calorie intake
+        maintenance_calories = [totalcalorieseachday] * len(days)# Maintenance calorie level
+        weights = [weight - (total * (day / speed)) for day in days] # Calculate weight progression
+        
+        # Create the plot with improved visualization
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True) #Creates both plots with sizes for each; fig represents the entire figure (the whole window or canvas of the plot); plt.subplots(2, 1) creates a figure with 2 rows and 1 column of subplots; each plot on top of each other
+        #figsize=(10, 8) sets the total figure size to 10 inches wide by 8 inches tall ; sharex=True means both subplots will share the same x-axis
+
+        # Calories plot (top subplot)
+        ax1.set_title('Calories Progression') #set title for top plot
+        ax1.plot(days, calories_per_day, color='tab:blue', label='Calories per Day') #Plots daily calorie intake (blue)
+        ax1.plot(days, maintenance_calories, color='tab:green', label='Maintenance Calories', linestyle='--') #Plots maintenance calories (green, dashed line)
+        ax1.set_ylabel('Calories', color='tab:blue')
+        ax1.legend() #add legend 
+        
+        # Add grid for better readability
+        ax1.grid(True, linestyle='--', alpha=0.7)
+        
+        # Calculate y-axis limits for calories with some padding
+        cal_min = min(min(calories_per_day), min(maintenance_calories)) * 0.9 #For calories: Find min and max, add 10% padding
+        cal_max = max(max(calories_per_day), max(maintenance_calories)) * 1.1
+        ax1.set_ylim(cal_min, cal_max)
+        
+        # Weight plot (bottom subplot)
+        ax2.set_title('Weight Progression') #set title for bottom plot
+        ax2.plot(days, weights, color='tab:red', label='Weight') #Plots weight progression (red line)
+        ax2.set_xlabel('Days')
+        ax2.set_ylabel('Weight (lbs)', color='tab:red')
+        ax2.legend()
+        
+        # Add grid for better readability
+        ax2.grid(True, linestyle='--', alpha=0.7) #alpha ranges from 0.0 (completely transparent/invisible) to 1.0 (completely opaque), in this case, 0.7 means the grid lines are 70% opaque
+        
+        # Calculate y-axis limits for weight with some padding
+        weight_min = min(weights) * 0.99 #For weight: Find min and max, add 1% padding
+        weight_max = max(weights) * 1.01
+        ax2.set_ylim(weight_min, weight_max)
+        
+        # Add text annotations for key information
+        ax1.annotate(f'Daily Calories: {newtotal:.0f}', 
+                    xy=(days[-1], calories_per_day[-1]), 
+                    xytext=(10, 10), 
+                    textcoords='offset points')
+        
+        ax2.annotate(f'Final Weight: {weights[-1]:.1f} lbs', 
+                    xy=(days[-1], weights[-1]), 
+                    xytext=(10, 10), 
+                    textcoords='offset points')
+        
+        plt.tight_layout() #configure the plot tightly
+        plt.show() #show the plot
+        
+    elif cutorbulk == "maingain": 
+        # Maintaining current weight
+        print ("For maingaining, you should try and aim for eating the same amount of calories as you are burning, so...", totalcalorieseachday, "is the total amount of calories you need to be eating to maingain... you got this!")
+    else:
+        print ("please enter in what you are trying to do, either maingain, bulk, or cut. ")
+
+    # Increment times used and ask if user wants to continue
+    times += 1
+    wouldcontinue = input("Would you like to answer again? (yes or no): ").strip().lower()
+    if wouldcontinue == "yes":
+        continue
+    elif wouldcontinue == "no": 
+        print ("Thank you for comming and using our product, please come again soon :)")
+        break
