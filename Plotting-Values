@@ -1,0 +1,132 @@
+# Plotting section for different fitness goals
+    if cutorbulk == "bulk":
+        caloriesaday = (total *3500/speed)
+        newtotal = caloriesaday + totalcalorieseachday
+        print (caloriesaday, "is going to be the surplus you are in each day while", newtotal , " is the minimum amount of calories each day you must eat to gain", total , "to get you up to ",(weight+total), " pounds... you got this!")
+        
+        # Prepare data for plotting
+        days = np.arange(0, speed + 1)
+        calories_per_day = [newtotal] * len(days)
+        maintenance_calories = [totalcalorieseachday] * len(days)
+        weights = [weight + (total * (day / speed)) for day in days]
+        
+        # Create the plot with improved visualization
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+        
+        # Calories plot (top subplot)
+        ax1.set_title('Calories Progression')
+        ax1.plot(days, calories_per_day, color='tab:blue', label='Calories per Day')
+        ax1.plot(days, maintenance_calories, color='tab:green', label='Maintenance Calories', linestyle='--')
+        ax1.set_ylabel('Calories', color='tab:blue')
+        ax1.legend()
+        
+        # Add grid for better readability
+        ax1.grid(True, linestyle='--', alpha=0.7)
+        
+        # Calculate y-axis limits for calories with some padding
+        cal_min = min(min(calories_per_day), min(maintenance_calories)) * 0.9
+        cal_max = max(max(calories_per_day), max(maintenance_calories)) * 1.1
+        ax1.set_ylim(cal_min, cal_max)
+        
+        # Weight plot (bottom subplot)
+        ax2.set_title('Weight Progression')
+        ax2.plot(days, weights, color='tab:red', label='Weight')
+        ax2.set_xlabel('Days')
+        ax2.set_ylabel('Weight (lbs)', color='tab:red')
+        ax2.legend()
+        
+        # Add grid for better readability
+        ax2.grid(True, linestyle='--', alpha=0.7)
+        
+        # Calculate y-axis limits for weight with some padding
+        weight_min = min(weights) * 0.99
+        weight_max = max(weights) * 1.01
+        ax2.set_ylim(weight_min, weight_max)
+        
+        # Add text annotations for key information
+        ax1.annotate(f'Daily Calories: {newtotal:.0f}', #newtotal: The value to be displayed, .0f: Format specifier that rounds to 0 decimal places (whole number), ex: So if newtotal is 1800.6, it will display as "Daily Calories: 1801"
+                     xy=(days[-1], calories_per_day[-1]), #(days[-1], calories_per_day[-1]) specifies the point to annotate; days[-1] is the last day in the x-axis, while calories_per_day[-1] is the corresponding calories value for that day
+                     xytext=(10, 10),  #(10, 10) means offset the text 10 points right and 10 points up from the xy point
+                     textcoords='offset points') #Tells matplotlib to interpret xytext as a point-based offset, ensuring the text is placed 10 points right and 10 points up from the reference point
+        
+        ax2.annotate(f'Final Weight: {weights[-1]:.1f} lbs', #same logic as above, just with different data and formatting
+                     xy=(days[-1], weights[-1]), 
+                     xytext=(10, 10), 
+                     textcoords='offset points')
+        
+        plt.tight_layout()
+        plt.show()
+        
+    elif cutorbulk == "cut":
+        caloriesaday = ((total *3500/speed) * -1) #Multiplying by -1 makes the number negative to represent a deficit; calculates the total amount to lose weight
+        newtotal = caloriesaday + totalcalorieseachday
+        print (caloriesaday, "is going to be the deficit you are in each day while", newtotal ," is the maximum amount of calories each day you can eat to lose", total ,"to get you down to ", (weight-total), "pounds... you got this!")
+        
+        # Prepare data for plotting
+        days = np.arange(0, speed + 1)# Create an array of days from 0 to speed
+        calories_per_day = [newtotal] * len(days)# Constant daily calorie intake
+        maintenance_calories = [totalcalorieseachday] * len(days)# Maintenance calorie level
+        weights = [weight - (total * (day / speed)) for day in days] # Calculate weight progression
+        
+        # Create the plot with improved visualization
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True) #Creates both plots with sizes for each; fig represents the entire figure (the whole window or canvas of the plot); plt.subplots(2, 1) creates a figure with 2 rows and 1 column of subplots; each plot on top of each other
+        #figsize=(10, 8) sets the total figure size to 10 inches wide by 8 inches tall ; sharex=True means both subplots will share the same x-axis
+
+        # Calories plot (top subplot)
+        ax1.set_title('Calories Progression') #set title for top plot
+        ax1.plot(days, calories_per_day, color='tab:blue', label='Calories per Day') #Plots daily calorie intake (blue)
+        ax1.plot(days, maintenance_calories, color='tab:green', label='Maintenance Calories', linestyle='--') #Plots maintenance calories (green, dashed line)
+        ax1.set_ylabel('Calories', color='tab:blue')
+        ax1.legend() #add legend 
+        
+        # Add grid for better readability
+        ax1.grid(True, linestyle='--', alpha=0.7)
+        
+        # Calculate y-axis limits for calories with some padding
+        cal_min = min(min(calories_per_day), min(maintenance_calories)) * 0.9 #For calories: Find min and max, add 10% padding
+        cal_max = max(max(calories_per_day), max(maintenance_calories)) * 1.1
+        ax1.set_ylim(cal_min, cal_max)
+        
+        # Weight plot (bottom subplot)
+        ax2.set_title('Weight Progression') #set title for bottom plot
+        ax2.plot(days, weights, color='tab:red', label='Weight') #Plots weight progression (red line)
+        ax2.set_xlabel('Days')
+        ax2.set_ylabel('Weight (lbs)', color='tab:red')
+        ax2.legend()
+        
+        # Add grid for better readability
+        ax2.grid(True, linestyle='--', alpha=0.7) #alpha ranges from 0.0 (completely transparent/invisible) to 1.0 (completely opaque), in this case, 0.7 means the grid lines are 70% opaque
+        
+        # Calculate y-axis limits for weight with some padding
+        weight_min = min(weights) * 0.99 #For weight: Find min and max, add 1% padding
+        weight_max = max(weights) * 1.01
+        ax2.set_ylim(weight_min, weight_max)
+        
+        # Add text annotations for key information
+        ax1.annotate(f'Daily Calories: {newtotal:.0f}', 
+                    xy=(days[-1], calories_per_day[-1]), 
+                    xytext=(10, 10), 
+                    textcoords='offset points')
+        
+        ax2.annotate(f'Final Weight: {weights[-1]:.1f} lbs', 
+                    xy=(days[-1], weights[-1]), 
+                    xytext=(10, 10), 
+                    textcoords='offset points')
+        
+        plt.tight_layout() #configure the plot tightly
+        plt.show() #show the plot
+        
+    elif cutorbulk == "maingain": 
+        # Maintaining current weight
+        print ("For maingaining, you should try and aim for eating the same amount of calories as you are burning, so...", totalcalorieseachday, "is the total amount of calories you need to be eating to maingain... you got this!")
+    else:
+        print ("please enter in what you are trying to do, either maingain, bulk, or cut. ")
+
+    # Increment times used and ask if user wants to continue
+    times += 1
+    wouldcontinue = input("Would you like to answer again? (yes or no): ").strip().lower()
+    if wouldcontinue == "yes":
+        continue
+    elif wouldcontinue == "no": 
+        print ("Thank you for comming and using our product, please come again soon :)")
+        break
