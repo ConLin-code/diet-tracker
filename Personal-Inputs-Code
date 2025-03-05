@@ -1,0 +1,102 @@
+# Welcome message for the diet calculator
+print ("Hello, and welcome to the ideal diet calculator. Please answer some of the questions that we ask down below: ")
+
+times = 1
+while True: 
+
+    # First-time greeting
+    if times == 1: 
+        pass
+    else:
+        print ("This is your", times, "time here, keep enjoying")
+
+    # Function to safely get numeric input and handle potential errors
+    def getintegerinput (prompt):
+        while True:
+            try: 
+                # Convert input to float to allow decimal inputs
+                value = float(input(prompt))
+                return value
+            except ValueError:
+                # Error handling for invalid numeric inputs
+                print ("Please enter a positive integer")
+
+    # Collect user's physical characteristics
+    # Height in inches
+    height = getintegerinput("How tall are you in inches? ")
+
+    # Current weight in pounds
+    weight = getintegerinput("How much do you weigh in right now, (in pounds) ? ")
+
+    # Determine user's fitness goal
+    cutorbulk = input("Are you trying to maingain, bulk, or cut? ").strip().lower()
+
+    # Handle specific goal-related inputs
+    if cutorbulk == "bulk" or cutorbulk == "cut":
+        if cutorbulk == "cut":
+            # Weight loss goal
+            total = float(input("How many pounds are you trying to lose in total? ").strip().lower())
+            speed = float(input("In how many days are you trying to lose this weight by (only in days please)? "))
+        elif cutorbulk == "bulk":
+            # Weight gain goal
+            total = float(input("How many pounds are you trying to gain in total? ").strip().lower())
+            speed = float(input("In how many days are you trying to gain this weight by (only in days please)? "))            
+    elif cutorbulk == "maingain":
+        # No weight change goal
+        total = 0
+        speed = 0
+    else: 
+        print ("Please enter only maingain, bulk or cut please")
+        while True:
+            newvalue = str()
+
+    # Collect additional personal information    
+    # Age rounded to nearest year
+    age = getintegerinput("Please enter your age and round to the nearest year (use integers please): ")
+
+    # Average sleep hours
+    sleep = getintegerinput("How much on average do you sleep, (in hours)? ")
+
+    # Gender for accurate BMR calculation
+    gender = input("Are you male or female? ").strip().lower()
+
+    # Basal Metabolic Rate (BMR) calculation based on gender
+    if gender == "male":
+        # Mifflin-St Jeor Equation for males
+        bmr =  66.5 + (weight * 13.75 * 0.45359237) + (5.003 * (height * 2.54)) - (6.75 * age)
+        # Calories burned during sleep
+        calorieswhilesleeping = (bmr/24) * sleep * 0.85
+        
+    elif gender == "female":
+        # Mifflin-St Jeor Equation for females
+        bmr = (weight * 0.45359237 * 9.563 ) + 655.1 + (1.850 * (height * 2.54) ) - (4.676  * age)
+        # Calories burned during sleep
+        calorieswhilesleeping = (bmr/24) * sleep * 0.85
+    else: 
+        print ("There is an error in the gender that you gave us, please pick either male or female")
+
+    # Workout information
+    # Average daily workout duration
+    workout = float(input("How long do you workout for each day, on average, (in minutes)? ").strip().lower())
+
+    # Number of workout days per week
+    if workout > 1:
+        daysworkout = int(input("How many days a week do you workout for, (quanitity of days)? ").strip().lower())        
+    elif workout == 0:
+        daysworkout = 0
+    else: 
+        print ("Please enter an integer and try again")
+        break
+
+    # Walking information
+    walk = getintegerinput("How long do you walk on average each day? (in minutes) ")
+
+    # Walking speed if applicable
+    if walk > 0:
+        mph = float(input("How fast do you think you walk? Please enter an integer. (in mph) ex.(slow pace = 1-2 mph), (moderate pace = 2-3 mph), (brisk pace = 3-5 mph): "))
+    elif walk == 0: 
+        walk = 0
+        mph = 0
+
+    # Sitting time
+    sitting = getintegerinput("How long do you sit for each day on average, (in minutes)? ")
