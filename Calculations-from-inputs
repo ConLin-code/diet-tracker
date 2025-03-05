@@ -1,0 +1,29 @@
+# Calorie burn calculations for different activities
+    # Calories burned from walking (using a comprehensive formula)
+    caloriesburntfromwalking = (0.035 * (weight * 0.45359237)) +(((mph/2.23694) * (mph/2.23694))/(height * 0.0254)) * 0.029 * (weight * 0.45359237)
+
+    # Calories burned from sitting
+    caloriesburntfromsitting = 0.00793786 * weight * sitting
+
+    # Calories burned during workouts
+    caloriesburntwhileworkingout = (5.55555556 * workout * daysworkout)/7
+
+    # Calories burned while standing
+    caloriesburntstanding = (weight * 0.15)
+
+    # Function to calculate total daily calories burned
+    def calculatingcalories(caloriesburntfromwalking, caloriesburntfromsitting,caloriesburntwhileworkingout,calorieswhilesleeping):
+        # Sum of calories burned through different activities
+        calorieseachday = caloriesburntfromwalking + caloriesburntfromsitting + caloriesburntwhileworkingout + calorieswhilesleeping
+        return calorieseachday
+
+    # Calculate total calories burned each day
+    totalcalorieseachday = calculatingcalories(caloriesburntfromwalking, caloriesburntfromsitting,caloriesburntwhileworkingout,calorieswhilesleeping)
+    
+    # Calculate additional calories burned during non-active time
+    amounttimeleftover = 24*7 - sleep * 7 - workout/60 * daysworkout - walk/60 * 7 - sitting/60 * 7
+    finaltime = (amounttimeleftover) * caloriesburntstanding 
+
+    # Update total calories burned
+    totalcalorieseachday = totalcalorieseachday + finaltime
+    print ("On average, this is the total amount of calories that you burn each day:", totalcalorieseachday)
